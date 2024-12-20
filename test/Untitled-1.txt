@@ -1,0 +1,10 @@
+services:
+  test:
+    image: node:16
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: >
+      sh -c "npm install -g yaml-validator &&
+             yaml-validator docker-compose.yml &&
+             test \"$$(grep -c 'name: tsx-visualization' docker-compose.yml)\" -eq 1"

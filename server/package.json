@@ -1,0 +1,10 @@
+{
+  "name": "tsx-visualization-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@zilliz/milvus2-sdk-node": "^2.2.7",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}

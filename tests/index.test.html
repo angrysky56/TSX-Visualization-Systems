@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Structure Tests</title>
+  <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
+</head>
+<body>
+  <div id="mocha"></div>
+
+  <script src="https://unpkg.com/chai/chai.js"></script>
+  <script src="https://unpkg.com/mocha/mocha.js"></script>
+
+  <script class="mocha-init">
+    mocha.setup('bdd');
+    const expect = chai.expect;
+  </script>
+
+  <script>
+    describe('HTML Document Structure', () => {
+      it('should have a valid HTML closing tag', () => {
+        const htmlContent = document.documentElement.outerHTML;
+        expect(htmlContent).to.include('</html>');
+      });
+
+      it('should have proper HTML tag nesting', () => {
+        const htmlElement = document.documentElement;
+        expect(htmlElement.tagName.toLowerCase()).to.equal('html');
+      });
+
+      it('should have valid document structure', () => {
+        const doctype = document.doctype;
+        expect(doctype).to.not.be.null;
+        expect(document.documentElement.tagName.toLowerCase()).to.equal('html');
+      });
+    });
+
+    describe('HTML Document Closing Tag', () => {
+      it('should have closing tag at the end of document', () => {
+        const htmlContent = document.documentElement.outerHTML;
+        expect(htmlContent.trim().endsWith('</html>')).to.be.true;
+      });
+
+      it('should have balanced opening and closing html tags', () => {
+        const htmlContent = document.documentElement.outerHTML;
+        const openingTags = (htmlContent.match(/<html/g) || []).length;
+        const closingTags = (htmlContent.match(/<\/html>/g) || []).length;
+        expect(openingTags).to.equal(1);
+        expect(closingTags).to.equal(1);
+      });
+
+      it('should have closing tag in lowercase', () => {
+        const htmlContent = document.documentElement.outerHTML;
+        expect(htmlContent).to.include('</html>');
+        expect(htmlContent).to.not.include('</HTML>');
+      });
+
+      it('should not have attributes on the closing tag', () => {
+        const htmlContent = document.documentElement.outerHTML;
+        const closingTagMatch = htmlContent.match(/<\/html.*?>/);
+        expect(closingTagMatch[0]).to.equal('</html>');
+      });
+    });
+  </script>
+
+  <script class="mocha-exec">
+    mocha.run();
+  </script>
+</body>
+</html>

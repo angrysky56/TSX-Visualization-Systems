@@ -1,0 +1,59 @@
+### Quantum Framework GPU Configuration
+### Architecture:
+# Γ_compute = {GPU, Memory, Network}
+# Optimization: {CUDA, CuPy, PyTorch}
+
+services:
+  quantum_meta_engine:
+    build:
+      context: .
+      dockerfile: Dockerfile.quantum
+    image: quantum_meta_framework:latest
+    container_name: quantum_meta_engine
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+      - QUANTUM_META_PROCESSING=enabled
+      - GEOMETRIC_LOGIC_INTEGRATION=enabled
+    volumes:
+      - ./src:/quantum/src
+      - ./data:/quantum/data
+      - ./models:/quantum/models
+      - ./tests:/quantum/tests
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    ports:
+      - "8888:8888"  # Jupyter
+      - "6006:6006"  # TensorBoard
+    command: >
+      bash -c "
+        conda install -y pytorch torchvision cudatoolkit numba cupy-cuda12x &&
+        pip install --no-cache-dir jax jaxlib &&
+        python -m pytest tests/quantum_meta/test_integration.py -v"
+
+  visualization_service:
+    build:
+      context: ./visualization
+      dockerfile: Dockerfile.viz
+    image: quantum_viz:latest
+    container_name: quantum_visualization
+    depends_on:
+      - quantum_meta_engine
+    ports:
+      - "8050:8050"
+    environment:
+      - DISPLAY=:0
+      - QUANTUM_ENGINE_URL=http://quantum_meta_engine:8888
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

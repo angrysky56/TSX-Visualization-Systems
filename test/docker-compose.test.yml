@@ -1,0 +1,9 @@
+services:
+  test:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: test
+    volumes:
+      - ../:/app
+    command: npm test

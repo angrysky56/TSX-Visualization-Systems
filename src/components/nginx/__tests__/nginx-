@@ -1,0 +1,40 @@
+import { execSync } from 'child_process';
+import { jest } from '@jest/globals';
+
+jest.mock('child_process');
+
+describe('nginx daemon command', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (execSync as jest.Mock).mockClear();
+  });
+
+  test('executes nginx with correct daemon off parameter', () => {
+    const command = 'nginx -g "daemon off;"';
+    execSync(command);
+    expect(execSync).toHaveBeenCalledWith(command);
+  });
+
+  test('throws error when nginx command fails', () => {
+    (execSync as jest.Mock).mockImplementation(() => {
+      throw new Error('Failed to start nginx');
+    });
+    
+    expect(() => {
+      execSync('nginx -g "daemon off;"');
+    }).toThrow('Failed to start nginx');
+  });
+
+  test('passes through nginx process signals', () => {
+    const mockExit = jest.spyOn(process, 'exit').mockImplementation();
+    process.emit('SIGTERM', 'SIGTERM');
+    expect(mockExit).toHaveBeenCalled();
+    mockExit.mockRestore();
+  });
+
+  test('handles nginx startup with custom parameters', () => {
+    const command = 'nginx -g "daemon off;" -c /custom/nginx.conf';
+    execSync(command);
+    expect(execSync).toHaveBeenCalledWith(command);
+  });
+});

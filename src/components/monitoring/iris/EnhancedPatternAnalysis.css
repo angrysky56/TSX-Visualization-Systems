@@ -1,0 +1,10 @@
+.state-item {
+  padding: 4px;
+  background-color: white;
+  border-radius: 8px;
+  border-left-width: 4px;
+}
+
+.state-item.active {
+  border-left-color: var(--getStateColor);
+}

@@ -1,0 +1,37 @@
+# Prometheus Configuration for Quantum Visualization System
+# Implements hierarchical metrics collection with service discovery
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Alerting configuration (optional for development)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Rule configuration
+rule_files:
+  # - "quantum_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Milvus metrics collection
+  - job_name: 'milvus'
+    static_configs:
+      - targets: ['milvus:9091']
+    metrics_path: '/metrics'
+    scheme: 'http'
+
+  # Development server metrics
+  - job_name: 'dev-server'
+    static_configs:
+      - targets: ['dev-server:5173']
+    metrics_path: '/metrics'
+    scheme: 'http'
+
+  # Self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
