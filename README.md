@@ -1,3 +1,5 @@
+## Broken currently- needs a lot of work and revision.
+
 # TSX Visualization Systems
 
 A modern, React-based visualization system built with TypeScript, featuring interactive charts, 3D visualizations, and real-time data processing capabilities.
